@@ -45,7 +45,7 @@ User.init(
   },
   {
     sequelize,
-    modelName: "User",
+    modelName: "user",
     indexes: [
       { fields: ["first_name", "last_name"] },
       { fields: ["user_name"] },
@@ -54,7 +54,7 @@ User.init(
 );
 
 const Users_Conversations = sequelize.define(
-  "Users_Conversations",
+  "users_conversations",
   {
     isRead: { type: DataTypes.BOOLEAN, defaultValue: false },
   },
@@ -62,13 +62,13 @@ const Users_Conversations = sequelize.define(
 );
 
 User.belongsToMany(Conversation, {
-  through: "Users_Conversations",
+  through: "users_conversations",
   as: "userConversations",
   foreignKey: "user_id",
 });
 
 Conversation.belongsToMany(User, {
-  through: "Users_Conversations",
+  through: "users_conversations",
   foreignKey: "conversation_id",
 });
 

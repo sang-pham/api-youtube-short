@@ -1,5 +1,4 @@
 const { DataTypes, Model } = require("sequelize");
-const Message = require("./message");
 const sequelize = require("./index");
 
 class Conversation extends Model {}
@@ -14,7 +13,7 @@ Conversation.init(
   },
   {
     sequelize,
-    modelName: "Conversation",
+    modelName: "conversation",
   }
 );
 
