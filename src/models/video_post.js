@@ -1,26 +1,29 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("./dbInstance");
 
-class Comment extends Model { }
+class VideoPost extends Model { }
 
-Comment.init(
+VideoPost.init(
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    text: {
+    caption: {
       type: DataTypes.TEXT,
+    },
+    video_path: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
   },
   {
     sequelize,
-    modelName: "Comment",
-    tableName: "comments"
+    modelName: "VideoPost",
+    tableName: "video_posts"
   }
 );
 
 
-
-module.exports = Comment;
+module.exports = VideoPost;

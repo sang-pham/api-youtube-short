@@ -3,6 +3,7 @@ const { signup } = require("../controllers/user");
 
 const router = Router();
 
-router.route("/api/signup").post(signup);
+router.route("/signup")
+    .post(signup);
 
 module.exports = router;

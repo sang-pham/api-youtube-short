@@ -1,10 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
-const sequelize = require("./index");
-const User = require("./user");
-const Video = require("./video");
-const Comment = require("./comment");
+const sequelize = require("./dbInstance");
 
-class Reaction extends Model {}
+class Reaction extends Model { }
 
 Reaction.init(
   {
@@ -20,22 +17,11 @@ Reaction.init(
   {
     sequelize,
     modelName: "Reaction",
+    tableName: "reactions",
+    timestamp: false
   }
 );
 
-Reaction.belongsTo(User, {
-  foreignKey: "user_id",
-  onDelete: "cascade",
-});
 
-Reaction.belongsTo(Video, {
-  foreignKey: "video_id",
-  onDelete: "cascade",
-});
-
-Reaction.belongsTo(Comment, {
-  foreignKey: "comment_id",
-  onDelete: "cascade",
-});
 
 module.exports = Reaction;

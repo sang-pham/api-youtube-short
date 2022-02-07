@@ -1,9 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
-const Message = require("./message");
-const Comment = require("./comment");
-const sequelize = require("./index");
+const sequelize = require("./dbInstance");
 
-class Media extends Model {}
+class Media extends Model { }
 
 Media.init(
   {
@@ -11,9 +9,6 @@ Media.init(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-    },
-    path: {
-      type: DataTypes.STRING,
     },
     file_name: {
       type: DataTypes.STRING,
@@ -28,27 +23,9 @@ Media.init(
   {
     sequelize,
     modelName: "Media",
+    tableName: "media"
   }
 );
 
-Media.belongsTo(Message, {
-  foreignKey: "message_id",
-  onDelete: "cascade",
-});
-
-Message.hasMany(Media, {
-  foreignKey: "message_id",
-  as: "medias",
-});
-
-Media.belongsTo(Comment, {
-  foreignKey: "comment_id",
-  onDelete: "cascade",
-});
-
-Comment.hasMany(Media, {
-  foreignKey: "comment_id",
-  as: "medias",
-});
 
 module.exports = Media;

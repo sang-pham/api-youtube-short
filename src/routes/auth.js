@@ -3,6 +3,7 @@ const { signin } = require("../controllers/auth");
 
 const router = Router();
 
-router.route("/api/signin").post(signin);
+router.route("/signin")
+    .post(signin);
 
 module.exports = router;

@@ -1,8 +1,7 @@
-const sequelize = require("./index");
 const { DataTypes, Model } = require("sequelize");
-const Conversation = require("./conversation");
+const sequelize = require("./dbInstance");
 
-class User extends Model {}
+class User extends Model { }
 
 User.init(
   {
@@ -22,17 +21,16 @@ User.init(
     user_name: {
       type: DataTypes.STRING, //mean VARCHAR(255)
       allowNull: false,
+      unique: true
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true
     },
     hash_password: {
       type: DataTypes.TEXT,
       allowNull: false,
-    },
-    avatar_path: {
-      type: DataTypes.STRING,
     },
     role: {
       type: DataTypes.STRING,
@@ -40,12 +38,15 @@ User.init(
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true,
     },
+    avatar_path: {
+      type: DataTypes.STRING,
+    }
   },
   {
     sequelize,
-    modelName: "user",
+    modelName: "User",
+    tableName: "users",
     indexes: [
       { fields: ["first_name", "last_name"] },
       { fields: ["user_name"] },
@@ -53,23 +54,5 @@ User.init(
   }
 );
 
-const Users_Conversations = sequelize.define(
-  "users_conversations",
-  {
-    isRead: { type: DataTypes.BOOLEAN, defaultValue: false },
-  },
-  { timestamps: true }
-);
-
-User.belongsToMany(Conversation, {
-  through: "users_conversations",
-  as: "userConversations",
-  foreignKey: "user_id",
-});
-
-Conversation.belongsToMany(User, {
-  through: "users_conversations",
-  foreignKey: "conversation_id",
-});
 
 module.exports = User;

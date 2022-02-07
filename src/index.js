@@ -1,13 +1,8 @@
 require("dotenv").config();
 const express = require("express");
-const http = require("http");
 const cors = require("cors");
-const sequelize = require("./models");
 
-const userRoutes = require("./routes/user");
-const authRoutes = require("./routes/auth");
-
-sequelize.sync();
+require("./models");
 
 const app = express();
 
@@ -18,8 +13,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/", userRoutes);
-app.use("/", authRoutes);
+
+const routes = require('./routes');
+for (let route in routes) {
+  app.use(route, routes[route]);
+}
 
 app.listen(PORT, HOST, () => {
   console.log(`server is running on port ${HOST}:${PORT}`);

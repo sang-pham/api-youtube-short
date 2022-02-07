@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
-const sequelize = require("./index");
+const sequelize = require("./dbInstance");
 
-class Conversation extends Model {}
+class Conversation extends Model { }
 
 Conversation.init(
   {
@@ -13,7 +13,9 @@ Conversation.init(
   },
   {
     sequelize,
-    modelName: "conversation",
+    modelName: "Conversation",
+    tableName: "conversations",
+    timestamps: false,
   }
 );
 

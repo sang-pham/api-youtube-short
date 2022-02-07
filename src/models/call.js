@@ -1,26 +1,27 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("./dbInstance");
 
-class Comment extends Model { }
+class Call extends Model { }
 
-Comment.init(
+Call.init(
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    text: {
-      type: DataTypes.TEXT,
+    status: {
+      type: DataTypes.ENUM(["missed", "called"]),
     },
+    type: {
+      type: DataTypes.ENUM(["video, audio"])
+    }
   },
   {
     sequelize,
-    modelName: "Comment",
-    tableName: "comments"
+    modelName: "Call",
   }
 );
 
 
-
-module.exports = Comment;
+module.exports = Call;

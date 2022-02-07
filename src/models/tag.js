@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
-const sequelize = require("./index");
+const sequelize = require("./dbInstance");
 
-class Tag extends Model {}
+class Tag extends Model { }
 
 Tag.init(
   {
@@ -12,11 +12,14 @@ Tag.init(
     },
     name: {
       type: DataTypes.STRING,
+      allowNull: false
     },
   },
   {
     sequelize,
     modelName: "Tag",
+    tableName: "tags",
+    timestamp: false
   }
 );
 

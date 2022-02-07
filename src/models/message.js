@@ -1,9 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
-const sequelize = require("./index");
-const User = require("./user");
-const Conversation = require("./conversation");
+const sequelize = require("./dbInstance");
 
-class Message extends Model {}
+class Message extends Model { }
 
 Message.init(
   {
@@ -12,7 +10,7 @@ Message.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    content: {
+    text: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
@@ -20,33 +18,9 @@ Message.init(
   {
     sequelize,
     modelName: "Message",
+    tableName: "messages"
   }
 );
 
-User.hasMany(Message, {
-  as: "messages",
-  foreignKey: {
-    name: "user_id",
-    allowNull: false,
-  },
-});
-
-Message.belongsTo(User, {
-  as: "user",
-  foreignKey: {
-    name: "user_id",
-    allowNull: false,
-  },
-});
-
-Conversation.hasMany(Message, {
-  as: "messages",
-  foreignKey: "conversation_id",
-});
-
-Message.belongsTo(Conversation, {
-  foreignKey: "conversation_id",
-  onDelete: "cascade",
-});
 
 module.exports = Message;
