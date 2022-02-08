@@ -1,5 +1,4 @@
 module.exports = {
-  // '/api': require('./auth'),
-  // '/api': require('./user'),
+  '/api/user': require('./user'),
   "/api/conversation": require("./conversation"),
 };

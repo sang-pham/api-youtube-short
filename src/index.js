@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 
 const authRoutes = require("./routes/auth");
-const userRoutes = require("./routes/user");
 
 require("./models");
 
@@ -17,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api", authRoutes);
-app.use("/api", userRoutes);
+app.use(require("./authenticate"));
 
 const routes = require("./routes");
 for (let route in routes) {
