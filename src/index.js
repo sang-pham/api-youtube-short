@@ -12,7 +12,6 @@ const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || "localhost";
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api", authRoutes);

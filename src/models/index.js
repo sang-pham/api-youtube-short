@@ -246,6 +246,5 @@ module.exports = {
   sequelize,
   Relationship, User, Conversation, Message, Conversation, VideoPost,
   Comment, Media, Reaction, Call
-
 }
 

@@ -1,6 +1,6 @@
-const bcrpyt = require("bcrypt");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+const { User } = require("../models");
 
 const signin = async (req, res) => {
   let { email, password } = req.body;
@@ -11,7 +11,7 @@ const signin = async (req, res) => {
       },
     });
     if (user) {
-      const isPasswordMatch = await bcrpyt.compare(
+      const isPasswordMatch = await bcrypt.compare(
         password,
         user.hash_password
       );

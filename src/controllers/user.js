@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const { User } = require("../models");
 const fs = require("fs");
 
 const getUserAvatar = async (req, res) => {

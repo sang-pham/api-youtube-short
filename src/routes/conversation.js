@@ -1,10 +1,7 @@
 const router = require("express").Router();
-
+const { test } = require('../controllers')
 
 router.route("/")
-    .get((req, res) => {
-        console.log('abc');
-        res.send('hello');
-    });
+    .get(test);
 
 module.exports = router;
