@@ -36,6 +36,7 @@ const signin = async (req, res) => {
         last_name: user.last_name,
         first_name: user.first_name,
         user_name: user.user_name,
+        email: user.email,
         id: user.id,
         avatar_path: user.avatar_path,
       });
@@ -82,7 +83,7 @@ const signup = async (req, res) => {
   }
 };
 
-
-module.exports = { 
-  signin, signup 
+module.exports = {
+  signin,
+  signup,
 };
