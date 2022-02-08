@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("./dbInstance");
 
-class Call extends Model { }
+class Call extends Model {}
 
 Call.init(
   {
@@ -14,14 +14,14 @@ Call.init(
       type: DataTypes.ENUM(["missed", "called"]),
     },
     type: {
-      type: DataTypes.ENUM(["video, audio"])
-    }
+      type: DataTypes.ENUM(["video, audio"]),
+    },
   },
   {
     sequelize,
     modelName: "Call",
+    tableName: "calls",
   }
 );
-
 
 module.exports = Call;
