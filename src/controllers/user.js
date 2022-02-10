@@ -17,12 +17,64 @@ const getUserAvatar = async (req, res) => {
   }
 
   if (user.avatar_path) {
-    fs.createReadStream(`./src/public/users-avatars/${user.avatar_path}`).pipe(
-      res
-    );
+    fs.createReadStream(user.avatar_path).pipe(res);
   } else {
     fs.createReadStream("./src/public/images/default_avatar.png").pipe(res);
   }
 };
 
-module.exports = { getUserAvatar };
+const update = async (req, res) => {
+  let { first_name, last_name, user_name, email } = req.body;
+  try {
+    let avatar;
+    let userId = Number(req.auth.id);
+    let user = await User.findOne({
+      where: {
+        id: userId,
+      },
+    });
+    if (req.file) {
+      avatar = `./${req.file.path}`;
+      if (user.avatar_path && avatar) {
+        fs.unlink(user.avatar_path, (err) => {
+          if (err) {
+            throw err;
+          }
+        });
+      }
+    }
+    if (avatar) {
+      user.avatar_path = avatar;
+    }
+    if (first_name) {
+      user.first_name = first_name;
+    }
+    if (last_name) {
+      user.last_name = last_name;
+    }
+    if (user_name) {
+      user.user_name = user_name;
+    }
+    if (email) {
+      user.email = email;
+    }
+    await user.save();
+    return res.status(200).json({
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    if (error.name === "SequelizeDatabaseError") {
+      if (error.parent.errno == 1406) {
+        return res.status(400).json({
+          error: "Too large image to update",
+        });
+      }
+    }
+    return res.status(400).json({
+      error,
+    });
+  }
+};
+
+module.exports = { getUserAvatar, update };
