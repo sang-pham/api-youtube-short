@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED='0' nodemon ./src/index.js"
+    "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED='0' nodemon ./src/index.js",
+    "seed": "node ./src/db/seeds/index.js"
   },
   "author": "",
   "license": "ISC",

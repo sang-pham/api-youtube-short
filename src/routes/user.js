@@ -14,11 +14,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const { getUserAvatar, update } = require("../controllers/user");
+const { getUserAvatar, update, searchUsers } = require("../controllers/user");
 
 const router = Router();
 
-router.route("/:userId/avatar").get(getUserAvatar);
+router.get("/", searchUsers);
+
+router.get("/:userId/avatar", getUserAvatar);
 
 // router.use(requireSignin);
 

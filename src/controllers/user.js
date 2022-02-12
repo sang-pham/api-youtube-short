@@ -1,5 +1,6 @@
 const { User } = require("../models");
 const fs = require("fs");
+const Sequelize = require("sequelize");
 
 const getUserAvatar = async (req, res) => {
   let { userId } = req.params;
@@ -81,4 +82,43 @@ const update = async (req, res) => {
   }
 };
 
-module.exports = { getUserAvatar, update };
+const searchUsers = async (req, res) => {
+  let { text } = req.query;
+  console.log(text);
+  try {
+    let users;
+    if (!text) {
+      users = await User.findAll({
+        attributes: ["first_name", "last_name", "user_name", "id"],
+        limit: 10,
+      });
+    } else {
+      users = await User.findAll({
+        where: {
+          [Sequelize.Op.or]: [
+            Sequelize.where(
+              Sequelize.fn(
+                "concat",
+                Sequelize.col("first_name"),
+                " ",
+                Sequelize.col("last_name")
+              ),
+              {
+                [Sequelize.Op.like]: "%" + text + "%",
+              }
+            ),
+            { user_name: { [Sequelize.Op.like]: "%" + text + "%" } },
+          ],
+        },
+        attributes: ["first_name", "last_name", "user_name", "id"],
+        limit: 10,
+      });
+    }
+    return res.status(200).json({ users });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error });
+  }
+};
+
+module.exports = { getUserAvatar, update, searchUsers };
