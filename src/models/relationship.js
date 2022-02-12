@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("./dbInstance");
 
-class Relationship extends Model { }
+class Relationship extends Model {}
 
 Relationship.init(
   {
@@ -18,9 +18,8 @@ Relationship.init(
     sequelize,
     modelName: "Relationship",
     tableName: "relationships",
-    timestamps: false
+    timestamps: true,
   }
 );
-
 
 module.exports = Relationship;

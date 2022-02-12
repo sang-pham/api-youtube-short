@@ -1,15 +1,15 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('./dbInstance');
-const User = require('./user');
-const Conversation = require('./conversation');
-const Relationship = require('./relationship');
-const Message = require('./message');
-const Call = require('./call');
-const VideoPost = require('./video_post');
-const Comment = require('./comment');
-const Media = require('./media');
-const Tag = require('./tag');
-const Reaction = require('./reaction');
+const { DataTypes } = require("sequelize");
+const sequelize = require("./dbInstance");
+const User = require("./user");
+const Conversation = require("./conversation");
+const Relationship = require("./relationship");
+const Message = require("./message");
+const Call = require("./call");
+const VideoPost = require("./video_post");
+const Comment = require("./comment");
+const Media = require("./media");
+const Tag = require("./tag");
+const Reaction = require("./reaction");
 
 //user-conversation
 sequelize.define(
@@ -17,27 +17,26 @@ sequelize.define(
   {
     is_seen: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false
+      defaultValue: false,
     },
   },
   {
     tableName: "user_conversation",
-    timestamps: true
+    timestamps: true,
   }
 );
 
 User.belongsToMany(Conversation, {
   through: "user_conversation",
   foreignKey: "user_id",
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
 
 Conversation.belongsToMany(User, {
   through: "user_conversation",
   foreignKey: "conversation_id",
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
-
 
 //user-message
 User.hasMany(Message, {
@@ -46,7 +45,7 @@ User.hasMany(Message, {
     name: "user_id",
     allowNull: false,
   },
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
 
 Message.belongsTo(User, {
@@ -55,20 +54,20 @@ Message.belongsTo(User, {
     name: "user_id",
     allowNull: false,
   },
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
 
 //message-message
 Message.belongsTo(Message, {
   as: "parent",
   foreignKey: "parent_id",
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
 
 Message.hasOne(Message, {
   as: "children",
   foreignKey: "parent_id",
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
 
 //conversation-message
@@ -76,9 +75,9 @@ Conversation.hasMany(Message, {
   as: "messages",
   foreignKey: {
     name: "conversation_id",
-    allowNull: false
+    allowNull: false,
   },
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
 
 //message-call
@@ -86,25 +85,27 @@ Message.hasOne(Call, {
   as: "call",
   foreignKey: {
     name: "message_id",
-    allowNull: false
+    allowNull: false,
   },
-  onDelete: "cascade"
-})
+  onDelete: "cascade",
+});
 
 //relationship-user
 Relationship.belongsTo(User, {
   foreignKey: {
-    name: "user_id",
-    allowNull: false
+    name: "relate_id",
+    allowNull: false,
   },
+  as: "receive",
   onDelete: "cascade",
 });
 
 Relationship.belongsTo(User, {
   foreignKey: {
-    name: "relate_id",
-    allowNull: false
+    name: "user_id",
+    allowNull: false,
   },
+  as: "own",
   onDelete: "cascade",
 });
 
@@ -112,16 +113,16 @@ Relationship.belongsTo(User, {
 VideoPost.belongsTo(User, {
   foreignKey: {
     name: "user_id",
-    allowNull: false
+    allowNull: false,
   },
   onDelete: "cascade",
-  as: "user"
+  as: "user",
 });
 
 User.hasMany(VideoPost, {
   foreignKey: {
     name: "user_id",
-    allowNull: false
+    allowNull: false,
   },
   onDelete: "cascade",
   as: "videoPosts",
@@ -134,7 +135,7 @@ VideoPost.hasMany(Comment, {
     allowNull: false,
   },
   as: "comments",
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
 
 Comment.belongsTo(VideoPost, {
@@ -143,9 +144,8 @@ Comment.belongsTo(VideoPost, {
     allowNull: false,
   },
   as: "videoPost",
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
-
 
 //video_post - tag
 VideoPost.belongsToMany(Tag, {
@@ -158,12 +158,11 @@ Tag.belongsToMany(VideoPost, {
   foreignKey: "tag_id",
 });
 
-
 //reaction-user
 Reaction.belongsTo(User, {
   foreignKey: {
     name: "user_id",
-    allowNull: false
+    allowNull: false,
   },
   onDelete: "cascade",
 });
@@ -191,7 +190,6 @@ Media.belongsTo(Message, {
   foreignKey: "message_id",
   onDelete: "cascade",
 });
-
 
 Message.hasMany(Media, {
   foreignKey: "message_id",
@@ -225,7 +223,7 @@ Comment.belongsTo(User, {
   as: "user",
   foreignKey: {
     name: "user_id",
-    allowNull: false
+    allowNull: false,
   },
   onDelete: "cascade",
 });
@@ -234,17 +232,23 @@ User.hasMany(Comment, {
   as: "comments",
   foreignKey: {
     name: "user_id",
-    allowNull: false
+    allowNull: false,
   },
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
-
 
 sequelize.sync();
 
 module.exports = {
   sequelize,
-  Relationship, User, Conversation, Message, Conversation, VideoPost,
-  Comment, Media, Reaction, Call
-}
-
+  Relationship,
+  User,
+  Conversation,
+  Message,
+  Conversation,
+  VideoPost,
+  Comment,
+  Media,
+  Reaction,
+  Call,
+};
