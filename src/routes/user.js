@@ -18,7 +18,7 @@ const { getUserAvatar, update } = require("../controllers/user");
 
 const router = Router();
 
-router.route("/:userId/:avatar").get(getUserAvatar);
+router.route("/:userId/avatar").get(getUserAvatar);
 
 // router.use(requireSignin);
 

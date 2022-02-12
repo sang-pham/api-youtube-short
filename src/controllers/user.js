@@ -24,7 +24,7 @@ const getUserAvatar = async (req, res) => {
 };
 
 const update = async (req, res) => {
-  let { first_name, last_name, user_name, email } = req.body;
+  let { first_name, last_name, user_name, email, description } = req.body;
   try {
     let avatar;
     let userId = Number(req.auth.id);
@@ -58,7 +58,11 @@ const update = async (req, res) => {
     if (email) {
       user.email = email;
     }
+    if (description) {
+      user.description = description;
+    }
     await user.save();
+    user.hash_password = undefined;
     return res.status(200).json({
       user,
     });
