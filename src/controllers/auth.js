@@ -83,38 +83,8 @@ const signup = async (req, res) => {
   }
 };
 
-const requireSignin = (req, res, next) => {
-  if (req.headers.authorization) {
-    const token = req.headers.authorization.split(" ")[1];
-    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, user) => {
-      if (err) {
-        return res.status(401).json({
-          error: "Unauthorized",
-        });
-      }
-      user = await User.findOne({
-        where: {
-          id: user.id,
-        },
-      });
-      if (!user) {
-        return res.status(401).json({
-          error: "Unauthorized",
-        });
-      }
-
-      req.auth = user;
-      next();
-    });
-  } else {
-    return res.status(401).json({
-      error: "Unauthorized",
-    });
-  }
-};
 
 module.exports = {
   signin,
-  signup,
-  requireSignin,
+  signup
 };

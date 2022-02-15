@@ -38,7 +38,7 @@ const updateOrCreate = async (req, res) => {
 
 const getFriends = async (req, res) => {
   try {
-    let userId = req.auth.id;
+    let userId = req.params.userId || req.auth.id;
     let friends = await Relationship.findAll({
       where: {
         relate_id: userId,
@@ -58,7 +58,7 @@ const getFriends = async (req, res) => {
 
 const getFollowings = async (req, res) => {
   try {
-    let userId = req.auth.id;
+    let userId = req.params.userId || req.auth.id;
     let followings = await Relationship.findAll({
       where: {
         user_id: userId,
@@ -78,7 +78,7 @@ const getFollowings = async (req, res) => {
 
 const getFollowers = async (req, res) => {
   try {
-    let userId = req.auth.id;
+    let userId = req.params.userId || req.auth.id;
     let followers = await Relationship.findAll({
       where: {
         relate_id: userId,
@@ -116,10 +116,31 @@ const getBlocks = async (req, res) => {
   }
 };
 
+const deleteRelationship = async (req, res) => {
+  try {
+    let { relationshipId } = req.params;
+    if (relationshipId) {
+      let relationship = await Relationship.findOne({
+        where: {
+          id: relationshipId,
+        },
+      });
+      if (relationship) {
+        await relationship.destroy();
+        return res.status(200).json({ message: "Delete successfully" });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error });
+  }
+};
+
 module.exports = {
   updateOrCreate,
   getFriends,
   getFollowers,
   getFollowings,
   getBlocks,
+  deleteRelationship,
 };

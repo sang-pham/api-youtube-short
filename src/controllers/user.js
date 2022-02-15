@@ -25,7 +25,6 @@ const getUserAvatar = async (req, res) => {
 };
 
 const update = async (req, res) => {
-  console.log(req.body);
   console.log(req.file);
   let { first_name, last_name, user_name, email, description } = req.body;
   try {
@@ -84,6 +83,27 @@ const update = async (req, res) => {
   }
 };
 
+const getInfo = async (req, res) => {
+  let { id } = req.auth;
+  let user = await User.findOne({
+    where: {
+      id
+    },
+    attributes: ["first_name", "last_name",
+      "user_name", "id", "email", "avatar_path"],
+  });
+
+  if (!user) {
+    return res.status(404).json({
+      message: 'Not found'
+    })
+  }
+
+  return res.status(200).json({
+    user
+  })
+}
+
 const searchUsers = async (req, res) => {
   let { text } = req.query;
   console.log(text);
@@ -123,4 +143,4 @@ const searchUsers = async (req, res) => {
   }
 };
 
-module.exports = { getUserAvatar, update, searchUsers };
+module.exports = { getUserAvatar, update, searchUsers, getInfo };
