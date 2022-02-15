@@ -25,6 +25,7 @@ const getUserAvatar = async (req, res) => {
 };
 
 const update = async (req, res) => {
+  console.log(req.file);
   let { first_name, last_name, user_name, email, description } = req.body;
   try {
     let avatar;
