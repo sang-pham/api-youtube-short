@@ -13,13 +13,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const { getUserAvatar, update, searchUsers, getInfo } = require("../controllers/user");
+const {
+  getUserAvatar,
+  update,
+  searchUsers,
+  getInfo,
+} = require("../controllers/user");
 
 const router = Router();
 
-router.get("/", getInfo)
-
 router.get("/search", searchUsers);
+
+router.get("/:userId", getInfo);
 
 router.get("/:userId/avatar", getUserAvatar);
 

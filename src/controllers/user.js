@@ -84,25 +84,31 @@ const update = async (req, res) => {
 };
 
 const getInfo = async (req, res) => {
-  let { id } = req.auth;
+  let { userId } = req.params;
   let user = await User.findOne({
     where: {
-      id
+      id: userId,
     },
-    attributes: ["first_name", "last_name",
-      "user_name", "id", "email", "avatar_path"],
+    attributes: [
+      "first_name",
+      "last_name",
+      "user_name",
+      "id",
+      "email",
+      "avatar_path",
+    ],
   });
 
   if (!user) {
     return res.status(404).json({
-      message: 'Not found'
-    })
+      message: "Not found",
+    });
   }
 
   return res.status(200).json({
-    user
-  })
-}
+    user,
+  });
+};
 
 const searchUsers = async (req, res) => {
   let { text } = req.query;
