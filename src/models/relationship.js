@@ -11,7 +11,7 @@ Relationship.init(
       primaryKey: true,
     },
     status: {
-      type: DataTypes.ENUM(["follow", "friend", "block"]),
+      type: DataTypes.ENUM(["follow", "block"]),
     },
   },
   {

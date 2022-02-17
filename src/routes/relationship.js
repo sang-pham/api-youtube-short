@@ -1,6 +1,5 @@
 const {
   updateOrCreate,
-  getFriends,
   getFollowings,
   getFollowers,
   getBlocks,
@@ -15,8 +14,6 @@ router
     return res.status(200).json({ message: "fdasfdas" });
   })
   .post(updateOrCreate);
-
-router.get("/:userId/friends", getFriends);
 
 router.get("/:userId/followings", getFollowings);
 

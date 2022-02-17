@@ -1,4 +1,5 @@
 const { Relationship, User } = require("../models");
+const Sequelize = require("sequelize");
 
 const updateOrCreate = async (req, res) => {
   try {
@@ -30,26 +31,6 @@ const updateOrCreate = async (req, res) => {
       }
     }
     return res.status(200).json({ relationship });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error });
-  }
-};
-
-const getFriends = async (req, res) => {
-  try {
-    let userId = req.params.userId || req.auth.id;
-    let friends = await Relationship.findAll({
-      where: {
-        relate_id: userId,
-        status: "friend",
-      },
-      include: {
-        all: true,
-        attributes: ["first_name", "last_name", "user_name", "id"],
-      },
-    });
-    return res.status(200).json({ friends });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error });
@@ -138,7 +119,6 @@ const deleteRelationship = async (req, res) => {
 
 module.exports = {
   updateOrCreate,
-  getFriends,
   getFollowers,
   getFollowings,
   getBlocks,
