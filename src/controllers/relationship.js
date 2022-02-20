@@ -6,6 +6,15 @@ const updateOrCreate = async (req, res) => {
     let { id, status, user_id, relate_id } = req.body;
     let relationship;
     if (!id) {
+      if (status == "block") {
+        console.log(req.auth.id, relate_id);
+        await Relationship.destroy({
+          where: {
+            user_id: [req.auth.id, relate_id],
+            relate_id: [req.auth.id, relate_id],
+          },
+        });
+      }
       relationship = await Relationship.create({
         status,
         user_id,
@@ -50,6 +59,20 @@ const getFollowings = async (req, res) => {
         attributes: ["first_name", "last_name", "user_name", "id"],
       },
     });
+    followings = followings.map((following) => ({
+      relationshipId: following.id,
+      ...following.receive.dataValues,
+    }));
+    let blocks = await Relationship.findAll({
+      where: {
+        user_id: req.auth.id,
+        status: "block",
+      },
+      attributes: ["relate_id"],
+    });
+    followings = followings.filter((following) => {
+      return !blocks.find((block) => block.relate_id == following.id);
+    });
     return res.status(200).json({ followings });
   } catch (error) {
     console.log(error);
@@ -69,6 +92,20 @@ const getFollowers = async (req, res) => {
         all: true,
         attributes: ["first_name", "last_name", "user_name", "id"],
       },
+    });
+    followers = followers.map((follower) => ({
+      relationshipId: follower.id,
+      ...follower.own.dataValues,
+    }));
+    let blocks = await Relationship.findAll({
+      where: {
+        user_id: req.auth.id,
+        status: "block",
+      },
+      attributes: ["relate_id"],
+    });
+    followers = followers.filter((follower) => {
+      return !blocks.find((block) => block.relate_id == follower.id);
     });
     return res.status(200).json({ followers });
   } catch (error) {
@@ -90,6 +127,10 @@ const getBlocks = async (req, res) => {
         attributes: ["first_name", "last_name", "user_name", "id"],
       },
     });
+    blocks = blocks.map((block) => ({
+      relationshipId: block.id,
+      ...block.receive.dataValues,
+    }));
     return res.status(200).json({ blocks });
   } catch (error) {
     console.log(error);
