@@ -150,11 +150,13 @@ Comment.belongsTo(VideoPost, {
 //video_post - tag
 VideoPost.belongsToMany(Tag, {
   through: "video_tag",
+  as: "tags",
   foreignKey: "video_post_id",
 });
 
 Tag.belongsToMany(VideoPost, {
   through: "video_tag",
+  as: "videoPosts",
   foreignKey: "tag_id",
 });
 
@@ -251,4 +253,5 @@ module.exports = {
   Media,
   Reaction,
   Call,
+  Tag,
 };
