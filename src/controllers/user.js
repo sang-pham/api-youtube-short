@@ -112,7 +112,6 @@ const getInfo = async (req, res) => {
 
 const searchUsers = async (req, res) => {
   let { text } = req.query;
-  console.log(text);
   try {
     let users;
     if (!text) {
@@ -142,6 +141,12 @@ const searchUsers = async (req, res) => {
         limit: 10,
       });
     }
+
+    users = users.map(user => {
+      user.dataValues.full_name = user.fullName();
+      return user;
+    })
+
     return res.status(200).json({ users });
   } catch (error) {
     console.log(error);
@@ -149,4 +154,21 @@ const searchUsers = async (req, res) => {
   }
 };
 
-module.exports = { getUserAvatar, update, searchUsers, getInfo };
+const getUserInfo = async (req, res) => {
+  let { userId } = req.params;
+  try {
+    const user = await User.findByPk(userId, {
+      attributes: ["first_name", "last_name", "user_name", "id"],
+    });
+    user.dataValues.full_name = user.fullName();
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Get user info fail!"
+    })
+  }
+}
+
+module.exports = { getUserAvatar, update, searchUsers, getInfo, getUserInfo };

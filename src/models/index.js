@@ -34,6 +34,7 @@ User.belongsToMany(Conversation, {
 
 Conversation.belongsToMany(User, {
   through: "user_conversation",
+  as: 'users',
   foreignKey: "conversation_id",
   onDelete: "cascade",
 });
@@ -188,7 +189,7 @@ Reaction.belongsTo(Comment, {
 //message-media
 Media.belongsTo(Message, {
   foreignKey: "message_id",
-  onDelete: "cascade",
+  onDelete: 'cascade'
 });
 
 Message.hasMany(Media, {

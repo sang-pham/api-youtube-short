@@ -1,7 +1,25 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("./dbInstance");
 
-class User extends Model { }
+const PROTECTED_ATTRIBUTES = ['hash_password', 'role'];
+
+
+class User extends Model {
+  fullName() {
+    return [this.first_name, this.last_name].join(' ');
+  }
+
+  toJSON() {
+    // hide protected fields
+    let attributes = Object.assign({}, this.get());
+    for (let a of PROTECTED_ATTRIBUTES) {
+      delete attributes[a];
+    }
+    return attributes;
+  }
+}
+
+
 
 User.init(
   {
@@ -41,7 +59,10 @@ User.init(
     },
     avatar_path: {
       type: DataTypes.STRING,
-    }
+    },
+    status: {
+      type: DataTypes.INTEGER
+    },
   },
   {
     sequelize,
@@ -51,6 +72,7 @@ User.init(
       { fields: ["first_name", "last_name"] },
       { fields: ["user_name"] },
     ],
+
   }
 );
 

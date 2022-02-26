@@ -1,7 +1,10 @@
 const router = require("express").Router();
-const { test } = require('../controllers')
+const { getConversations, getConversationInfo } = require('../controllers')
 
 router.route("/")
-    .get(test);
+    .get(getConversations);
+
+router.get("/info", getConversationInfo);
+
 
 module.exports = router;

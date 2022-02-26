@@ -13,12 +13,21 @@ Media.init(
     file_name: {
       type: DataTypes.STRING,
     },
+    path: {
+      type: DataTypes.TEXT,
+    },
     size: {
       type: DataTypes.INTEGER,
     },
     type: {
-      type: DataTypes.ENUM(["video", "image", "file"]),
+      type: DataTypes.STRING,
     },
+    model_id: {
+      type: DataTypes.INTEGER
+    },
+    model_type: {
+      type: DataTypes.STRING
+    }
   },
   {
     sequelize,
@@ -26,6 +35,7 @@ Media.init(
     tableName: "media"
   }
 );
+
 
 
 module.exports = Media;

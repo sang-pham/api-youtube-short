@@ -18,6 +18,7 @@ const {
   update,
   searchUsers,
   getInfo,
+  getUserInfo
 } = require("../controllers/user");
 
 const router = Router();
@@ -25,6 +26,8 @@ const router = Router();
 router.get("/search", searchUsers);
 
 router.get("/:userId", getInfo);
+
+router.get("/:userId/info", getUserInfo);
 
 router.get("/:userId/avatar", getUserAvatar);
 
