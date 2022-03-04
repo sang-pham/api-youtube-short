@@ -20,6 +20,13 @@ const videoPosts = [
     user_id: 4,
     tags: [1, 3],
   },
+  {
+    caption: "Sound nice",
+    video_path:
+      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    user_id: 5,
+    tags: [3, 4],
+  },
 ];
 
 module.exports = videoPosts;

@@ -3,4 +3,5 @@ module.exports = {
   ...require("./user"),
   ...require("./conversation"),
   ...require("./videoPost"),
+  ...require("./comment"),
 };

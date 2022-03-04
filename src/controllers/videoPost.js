@@ -1,10 +1,16 @@
-const { VideoPost, Tag, User, Relationship } = require("../models");
+const {
+  VideoPost,
+  Tag,
+  User,
+  Relationship,
+  Comment,
+  Media,
+} = require("../models");
 const axios = require("axios");
 
 const getFollowingVideoPosts = async (req, res) => {
   try {
     let userId = req.params.userId || req.auth.id;
-    console.log(userId);
     let page = req.query.page || 0;
     let perPage = req.query.per_page || 10;
     let followings = await Relationship.findAll({
@@ -31,7 +37,7 @@ const getFollowingVideoPosts = async (req, res) => {
           attributes: ["id", "first_name", "last_name", "user_name", "email"],
         },
       ],
-      order: [["createdAt", "ASC"]],
+      order: [["createdAt", "DESC"]],
       offset: page * perPage,
       limit: perPage,
     });
@@ -97,4 +103,74 @@ const getVideoById = async (req, res) => {
   }
 };
 
-module.exports = { getFollowingVideoPosts, getVideoPostById, getVideoById };
+const getComment = async (commentId) => {
+  let comment = await Comment.findOne({
+    where: {
+      id: commentId,
+    },
+    include: [
+      {
+        model: Comment,
+        as: "comments",
+      },
+      {
+        model: Media,
+        as: "media",
+      },
+      {
+        model: User,
+        as: "user",
+        attributes: ["user_name"],
+      },
+    ],
+  });
+  if (comment && comment.comments) {
+    for (let i = 0; i < comment.comments.length; i++) {
+      if (comment.comments[i]) {
+        comment.comments[i] = await getComment(comment.comments[i].id);
+      }
+    }
+  }
+  return comment;
+};
+
+const getVideoPostComments = async (req, res) => {
+  try {
+    let videoPostId = req.params.videoPostId;
+    let comments = await Comment.findAll({
+      where: {
+        video_post_id: videoPostId,
+        parent_id: null,
+      },
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["user_name"],
+        },
+        {
+          model: Media,
+          as: "media",
+        },
+      ],
+      attributes: ["id"],
+      order: [["createdAt", "DESC"]],
+    });
+    for (let i = 0; i < comments.length; i++) {
+      if (comments[i]) {
+        comments[i] = await getComment(comments[i].id);
+      }
+    }
+    return res.status(200).json({ comments });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error });
+  }
+};
+
+module.exports = {
+  getFollowingVideoPosts,
+  getVideoPostById,
+  getVideoById,
+  getVideoPostComments,
+};

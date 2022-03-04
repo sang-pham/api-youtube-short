@@ -16,6 +16,11 @@ const relationships = [
   },
   {
     status: "follow",
+    user_id: 3,
+    relate_id: 5,
+  },
+  {
+    status: "follow",
     user_id: 4,
     relate_id: 1,
   },
