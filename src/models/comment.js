@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("./dbInstance");
 
-class Comment extends Model { }
+class Comment extends Model {}
 
 Comment.init(
   {
@@ -17,10 +17,13 @@ Comment.init(
   {
     sequelize,
     modelName: "Comment",
-    tableName: "comments"
+    tableName: "comments",
+    indexes: [
+      {
+        fields: ["parent_id"],
+      },
+    ],
   }
 );
-
-
 
 module.exports = Comment;

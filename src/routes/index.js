@@ -3,4 +3,5 @@ module.exports = {
   "/api/conversation": require("./conversation"),
   "/api/relationship": require("./relationship"),
   "/api/video-post": require("./videoPost"),
+  "/api/comment": require("./comment"),
 };
