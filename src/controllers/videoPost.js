@@ -4,7 +4,6 @@ const axios = require("axios");
 const getFollowingVideoPosts = async (req, res) => {
   try {
     let userId = req.params.userId || req.auth.id;
-    console.log(userId);
     let page = req.query.page || 0;
     let perPage = req.query.per_page || 10;
     let followings = await Relationship.findAll({

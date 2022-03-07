@@ -7,10 +7,10 @@ const conversationSeeder = require("./conversation");
 
 
 (async () => {
-  await userSeeder();
-  await relationshipSeeder();
-  await tagSeeder();
-  await videoPostSeeder();
+  // await userSeeder();
+  // await relationshipSeeder();
+  // await tagSeeder();
+  // await videoPostSeeder();
   await conversationSeeder();
   process.exit();
 })();

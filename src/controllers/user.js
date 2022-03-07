@@ -25,7 +25,6 @@ const getUserAvatar = async (req, res) => {
 };
 
 const update = async (req, res) => {
-  console.log(req.file);
   let { first_name, last_name, user_name, email, description } = req.body;
   try {
     let avatar;
@@ -146,6 +145,7 @@ const searchUsers = async (req, res) => {
       user.dataValues.full_name = user.fullName();
       return user;
     })
+
 
     return res.status(200).json({ users });
   } catch (error) {

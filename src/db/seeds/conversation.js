@@ -1,13 +1,25 @@
 const { QueryTypes } = require("sequelize");
-const { Conversation, User, sequelize } = require("../../models");
+const { Conversation, User, sequelize, Message } = require("../../models");
 
 const conversationSeeder = async () => {
   try {
-    let user_1 = await User.findByPk(1);
-    let user_2 = await User.findByPk(2);
-    let cons = await Conversation.create({})
+    const user_1 = await User.findByPk(1);
+    const user_2 = await User.findByPk(2);
+    const cons = await Conversation.create({});
     await user_1.addConversation(cons);
     await user_2.addConversation(cons);
+
+    await Message.create({
+      text: 'hello',
+      conversation_id: cons.id,
+      user_id: user_2.id,
+    })
+
+    await Message.create({
+      text: 'hi',
+      conversation_id: cons.id,
+      user_id: user_1.id,
+    })
 
     // const conversations = await sequelize.query(
     //   "SELECT uc.conversation_id, uc.user_id as person_id, concat(u.first_name, ' ', u.last_name) as full_name, " +
@@ -30,5 +42,7 @@ const conversationSeeder = async () => {
     console.log(error);
   }
 };
+
+
 
 module.exports = conversationSeeder;
