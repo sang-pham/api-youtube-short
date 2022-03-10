@@ -1,35 +1,32 @@
-const { setConversation, setMessage, getPerson } = require('../controllers')
-
-const emitToMany = (socket, sockets, evtName, payload) => {
-  sockets?.forEach(id => {
-    socket.to(id).emit(evtName, payload);
-  });
-}
+const { setConversation, setMessage, getPerson } = require("../controllers");
+const { emitToMany } = require("./shared");
 
 const messageSocket = (io, socket, userSockets) => {
-  socket.on('send-message', async ({ text, senderId, receiverId, v4Id }) => {
+  socket.on("send-message", async ({ text, senderId, receiverId, v4Id }) => {
     const conversation = await setConversation({
       senderId,
-      receiverId
-    })
+      receiverId,
+    });
 
     const message = await setMessage({
-      text, conversationId: conversation.id,
-      senderId, receiverId
+      text,
+      conversationId: conversation.id,
+      senderId,
+      receiverId,
     });
 
     let person = await getPerson(receiverId);
 
-    socket.emit('sent-message', { message, conversation, person, v4Id });
+    socket.emit("sent-message", { message, conversation, person, v4Id });
 
     person = await getPerson(senderId);
 
-    emitToMany(socket, userSockets[receiverId], 'receive-message', {
+    emitToMany(socket, userSockets[receiverId], "receive-message", {
       message,
       conversation,
-      person
+      person,
     });
-  })
-}
+  });
+};
 
 module.exports = messageSocket;
