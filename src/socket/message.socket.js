@@ -13,7 +13,10 @@ const messageSocket = (io, socket, userSockets) => {
       receiverId
     })
 
-    const message = await setMessage({ text, conversationId: conversation.id, senderId });
+    const message = await setMessage({
+      text, conversationId: conversation.id,
+      senderId, receiverId
+    });
 
     let person = await getPerson(receiverId);
 

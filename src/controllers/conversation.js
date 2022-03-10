@@ -1,7 +1,7 @@
 const { QueryTypes } = require('sequelize');
 const { Conversation, User, sequelize, Message } = require('../models');
 
-const { addUserConversation, getRecentMessage } = require('./conversation.support')
+const { addUserConversation, getRecentMessage, readMessage } = require('./conversation.support')
 
 const getConversations = async (req, res) => {
 	try {
@@ -43,11 +43,12 @@ const getConversationInfo = async (req, res) => {
 		const user = await User.findByPk(personId, {
 			attributes: ["first_name", "last_name", "user_name", "avatar_path", ['id', 'person_id']],
 		});
-
+		let message;
+		let is_seen = false;
 		let conversation = conversationId && await Conversation.findByPk(conversationId);;
 
 		if (!conversationId) {
-			const query = await sequelize.query(
+			conversation = (await sequelize.query(
 				"SELECT conversation_id as id " +
 				"FROM user_conversation uc " +
 				"JOIN (SELECT conversation_id FROM user_conversation WHERE user_id = :userId) uc2 using(conversation_id) " +
@@ -58,15 +59,19 @@ const getConversationInfo = async (req, res) => {
 					},
 					type: QueryTypes.SELECT
 				}
-			);
+			))[0];
+		} else {
 
-			conversation = query.length && query[0];
+			is_seen = await readMessage(conversationId, userId);
+
+			message = await getRecentMessage(conversationId);
 		}
 
-		const message = await getRecentMessage(conversationId);
+
 
 		return res.status(200).json({
 			id: conversation?.id,
+			is_seen,
 			message,
 			full_name: user.fullName(),
 			...user.dataValues
@@ -97,7 +102,6 @@ const setConversation = async ({ senderId, receiverId }) => {
 			await addUserConversation(conversation.id, senderId, receiverId);
 		}
 
-
 		return conversation;
 	} catch (error) {
 		console.log(error);
@@ -114,6 +118,9 @@ const getMessages = async (req, res) => {
 			where: {
 				conversation_id: conversationId,
 			},
+			order: [
+				['createdAt', 'DESC']
+			]
 		})
 
 		return res.status(200).json(messages);
@@ -126,8 +133,30 @@ const getMessages = async (req, res) => {
 	}
 }
 
+const getNumberOfUnRead = async (req, res) => {
+	const { id } = req.auth;
+	try {
+		const data = await sequelize.query(
+			"SELECT COUNT(*) as count " +
+			"FROM user_conversation uc " +
+			"WHERE user_id = :id AND is_seen = 0;",
+			{
+				replacements: {
+					id
+				},
+				type: QueryTypes.SELECT
+			}
+		)
+		console.log(data);
+		return res.status(200).json(data[0].count);
+
+	} catch (error) {
+		console.log(error);
+		res.status(500).json(error);
+	}
+}
 
 module.exports = {
 	getConversations, getConversationInfo, setConversation,
-	getMessages,
+	getMessages, getNumberOfUnRead
 }

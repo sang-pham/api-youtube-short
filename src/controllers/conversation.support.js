@@ -1,3 +1,4 @@
+const { Message, User } = require("../models");
 const { sequelize } = require("../models/user");
 
 
@@ -9,15 +10,16 @@ const addUserConversation = async (conversationId, userId_1, userId_2) => {
     {
       replacements: {
         conversationId,
-        userId_1: senderId,
-        userId_2: receiverId
+        userId_1,
+        userId_2
       }
     }
   );
 }
 
 const readMessage = async (conversationId, userId) => {
-  return await sequelize.query(
+  if (!conversationId) return false;
+  await sequelize.query(
     "UPDATE user_conversation SET updatedAt = NOW(), is_seen = 1 " +
     "WHERE conversation_id = :conversationId AND user_id = :userId",
     {
@@ -27,12 +29,15 @@ const readMessage = async (conversationId, userId) => {
       }
     }
   )
+
+  return true;
 }
 
 const unReadMessage = async (conversationId, userId) => {
-  return await sequelize.query(
+  if (!conversationId) return false;
+  await sequelize.query(
     "UPDATE user_conversation SET updatedAt = NOW(), is_seen = 0 " +
-    "WHERE conversation_id = :conversationId AND user_id NOT LIKE :userId",
+    "WHERE conversation_id = :conversationId AND user_id = :userId",
     {
       replacements: {
         conversationId,
@@ -40,9 +45,11 @@ const unReadMessage = async (conversationId, userId) => {
       }
     }
   )
+
+  return true;
 }
 
-const setMessage = async ({ text, conversationId, senderId }) => {
+const setMessage = async ({ text, conversationId, senderId, receiverId }) => {
   try {
     const message = await Message.create({
       text,
@@ -51,8 +58,7 @@ const setMessage = async ({ text, conversationId, senderId }) => {
     });
 
     await readMessage(conversationId, senderId);
-    await unReadMessage(conversationId, senderId);
-
+    await unReadMessage(conversationId, receiverId);
 
     return message;
   } catch (error) {
@@ -61,11 +67,9 @@ const setMessage = async ({ text, conversationId, senderId }) => {
   }
 }
 
-const getRecentMessage = (conversationId) => {
+const getRecentMessage = async (conversationId) => {
 
-  if (!conversationId) return null;
-
-  const message = Message.findOne({
+  const message = await Message.findOne({
     where: {
       conversation_id: conversationId
     },
