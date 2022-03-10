@@ -9,17 +9,127 @@ const conversationSeeder = async () => {
     await user_1.addConversation(cons);
     await user_2.addConversation(cons);
 
-    await Message.create({
-      text: 'hello',
-      conversation_id: cons.id,
-      user_id: user_2.id,
-    })
+    const data = [
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_2.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_1.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_1.id,
+      },
+      {
+        text: 'hello',
+        conversation_id: cons.id,
+        user_id: user_1.id,
+      }
+    ]
 
-    await Message.create({
-      text: 'hi',
-      conversation_id: cons.id,
-      user_id: user_1.id,
-    })
+    await Promise.all(data.map(async(item) => {
+      await Message.create(item);
+      return item;
+    }))
+
+    console.log('Seed conversation and message done');
+
+    // await Message.create({
+    //   text: 'hello',
+    //   conversation_id: cons.id,
+    //   user_id: user_2.id,
+    // })
+
+    // await Message.create({
+    //   text: 'hi',
+    //   conversation_id: cons.id,
+    //   user_id: user_1.id,
+    // })
 
     // const conversations = await sequelize.query(
     //   "SELECT uc.conversation_id, uc.user_id as person_id, concat(u.first_name, ' ', u.last_name) as full_name, " +

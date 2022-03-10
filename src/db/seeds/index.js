@@ -11,7 +11,7 @@ const conversationSeeder = require("./conversation");
   await relationshipSeeder();
   await tagSeeder();
   await videoPostSeeder();
-  await commentSeeder();
+  // await commentSeeder();
   await conversationSeeder();
   process.exit();
 })();
