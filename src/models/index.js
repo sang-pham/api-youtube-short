@@ -34,7 +34,7 @@ User.belongsToMany(Conversation, {
 
 Conversation.belongsToMany(User, {
   through: "user_conversation",
-  as: 'users',
+  as: "users",
   foreignKey: "conversation_id",
   onDelete: "cascade",
 });
@@ -139,6 +139,13 @@ VideoPost.hasMany(Comment, {
   onDelete: "cascade",
 });
 
+VideoPost.hasMany(Reaction, {
+  foreignKey: {
+    name: "video_post_id",
+  },
+  as: "reactions",
+});
+
 Comment.belongsTo(VideoPost, {
   foreignKey: {
     name: "video_post_id",
@@ -167,6 +174,7 @@ Reaction.belongsTo(User, {
     name: "user_id",
     allowNull: false,
   },
+  as: "user",
   onDelete: "cascade",
 });
 
@@ -191,7 +199,7 @@ Reaction.belongsTo(Comment, {
 //message-media
 Media.belongsTo(Message, {
   foreignKey: "message_id",
-  onDelete: 'cascade'
+  onDelete: "cascade",
 });
 
 Message.hasMany(Media, {
