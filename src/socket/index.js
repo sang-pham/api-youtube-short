@@ -1,10 +1,6 @@
 const messageSocket = require("./message.socket");
-const commentSocket = require("./comment.socket");
+const videoPostSocket = require("./video-post.socket");
 const userSockets = {};
-const { socketCreateComment } = require("../controllers");
-const { emitToMany } = require("./shared");
-
-const videoPostSockets = {};
 
 module.exports = (io, socket) => {
   if (!userSockets[socket.userId]) {
@@ -15,7 +11,7 @@ module.exports = (io, socket) => {
 
   messageSocket(io, socket, userSockets);
 
-  commentSocket(io, socket);
+  videoPostSocket(io, socket);
 
   socket.on("disconnect", () => {
     console.log("disconnect");

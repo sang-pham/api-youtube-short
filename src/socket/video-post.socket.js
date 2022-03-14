@@ -1,4 +1,5 @@
 const { socketCreateComment } = require("../controllers");
+const { Reaction, User } = require("../models");
 const { emitToMany } = require("./shared");
 
 const videoPostSockets = {};
@@ -45,6 +46,47 @@ const commentSocket = (io, socket) => {
       }
     }
   );
+
+  //reaction
+  socket.on("unreaction-video-post", async ({ user_id, video_post_id }) => {
+    await Reaction.destroy({
+      where: {
+        user_id,
+        video_post_id,
+      },
+    });
+    emitToMany(socket, videoPostSockets[video_post_id], "new-unreaction-post", {
+      user_id,
+      video_post_id,
+    });
+  });
+
+  socket.on("reaction-video-post", async ({ user_id, type, video_post_id }) => {
+    let reaction = await Reaction.create({
+      user_id,
+      type,
+      video_post_id,
+    });
+    reaction = await Reaction.findOne({
+      where: {
+        id: reaction.id,
+      },
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "user_name"],
+        },
+      ],
+    });
+    socket.emit("new-reaction-post", reaction);
+    emitToMany(
+      socket,
+      videoPostSockets[video_post_id],
+      "new-reaction-post",
+      reaction
+    );
+  });
 };
 
 module.exports = commentSocket;

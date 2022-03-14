@@ -5,14 +5,16 @@ const {
   Relationship,
   Comment,
   Media,
+  Reaction,
 } = require("../models");
 const axios = require("axios");
+const { Op } = require("sequelize");
 
 const getFollowingVideoPosts = async (req, res) => {
   try {
     let userId = req.params.userId || req.auth.id;
-    let page = req.query.page || 0;
-    let perPage = req.query.per_page || 10;
+    let page = (Number(req.query.page) || 1) - 1;
+    let perPage = Number(req.query.per_page) || 10;
     let followings = await Relationship.findAll({
       where: {
         user_id: userId,
@@ -37,7 +39,55 @@ const getFollowingVideoPosts = async (req, res) => {
           attributes: ["id", "first_name", "last_name", "user_name", "email"],
         },
       ],
-      order: [["createdAt", "DESC"]],
+      order: [
+        ["user_id", "ASC"],
+        ["createdAt", "DESC"],
+      ],
+      offset: page * perPage,
+      limit: perPage,
+    });
+    return res.status(200).json({
+      videoPosts,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error });
+  }
+};
+
+const getSuggestVideoPosts = async (req, res) => {
+  try {
+    let userId = req.params.userId || req.auth.id;
+    let page = (Number(req.query.page) || 1) - 1;
+    let perPage = Number(req.query.per_page) || 10;
+    let followings = await Relationship.findAll({
+      where: {
+        user_id: userId,
+        status: "follow",
+      },
+      attributes: ["relate_id"],
+    });
+    followings = followings.map((following) => following.relate_id);
+    let videoPosts = await VideoPost.findAll({
+      where: {
+        user_id: { [Op.notIn]: [followings] },
+      },
+      include: [
+        {
+          model: Tag,
+          as: "tags",
+          attributes: ["id", "name"],
+        },
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "first_name", "last_name", "user_name", "email"],
+        },
+      ],
+      order: [
+        ["user_id", "ASC"],
+        ["createdAt", "DESC"],
+      ],
       offset: page * perPage,
       limit: perPage,
     });
@@ -168,9 +218,34 @@ const getVideoPostComments = async (req, res) => {
   }
 };
 
+const getVideoPostReactions = async (req, res) => {
+  try {
+    let videoPostId = req.params.videoPostId;
+    let reactions = await Reaction.findAll({
+      where: {
+        video_post_id: videoPostId,
+      },
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "user_name"],
+        },
+      ],
+      attributes: ["id", "type"],
+    });
+    return res.status(200).json({ reactions });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error });
+  }
+};
+
 module.exports = {
   getFollowingVideoPosts,
   getVideoPostById,
   getVideoById,
   getVideoPostComments,
+  getVideoPostReactions,
+  getSuggestVideoPosts,
 };
