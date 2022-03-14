@@ -134,40 +134,40 @@ const setConversation = async ({ senderId, receiverId }) => {
 // }
 
 const getMessages = async (req, res) => {
-		try {
-				const { conversationId } = req.params;
-				let current = Number(req.query.current);
-				let per_page = Number(req.query.per_page);
-				let total = 0;
+	try {
+		const { conversationId } = req.params;
+		let current = Number(req.query.current);
+		let per_page = Number(req.query.per_page);
+		let total = 0;
 
-				const result = await Message.findAndCountAll({
-					where: {
-						conversation_id: conversationId,
-					},
-					order: [
-						['createdAt', 'DESC']
-					],
-					offset: current,
-					limit: per_page,
-				})
+		const result = await Message.findAndCountAll({
+			where: {
+				conversation_id: conversationId,
+			},
+			order: [
+				['createdAt', 'DESC']
+			],
+			offset: current,
+			limit: per_page,
+		})
 
-				total = result.count;
-				current += per_page;
+		total = result.count;
+		current += per_page;
 
-				if (current >= total) current = total;
-		
-				return res.status(200).json({
-					messages: result.rows,
-					current: current,
-					total: result.count
-				});
-		
-			} catch (error) {
-				console.log(error)
-				return res.status(500).json({
-					message: "Server error!"
-				})
-			}
+		if (current >= total) current = total;
+
+		return res.status(200).json({
+			messages: result.rows,
+			current: current,
+			total: result.count
+		});
+
+	} catch (error) {
+		console.log(error)
+		return res.status(500).json({
+			message: "Server error!"
+		})
+	}
 }
 
 const getNumberOfUnRead = async (req, res) => {
@@ -184,7 +184,7 @@ const getNumberOfUnRead = async (req, res) => {
 				type: QueryTypes.SELECT
 			}
 		)
-		console.log(data);
+
 		return res.status(200).json(data[0].count);
 
 	} catch (error) {
@@ -195,7 +195,7 @@ const getNumberOfUnRead = async (req, res) => {
 
 const deleteMessage = async (req, res) => {
 	try {
-		const { messageId} = req.params;
+		const { messageId } = req.params;
 		const message = await Message.findByPk(messageId);
 
 		if (!message) {
@@ -205,7 +205,7 @@ const deleteMessage = async (req, res) => {
 		}
 
 		await message.destroy();
-	
+
 		return res.status(200).json({
 			message: 'delete message successfully',
 			data: message
