@@ -5,9 +5,12 @@ const {
   getVideoById,
   getVideoPostComments,
   getVideoPostReactions,
+  getSuggestVideoPosts,
 } = require("../controllers");
 
 router.route("/following").get(getFollowingVideoPosts);
+
+router.get("/suggest", getSuggestVideoPosts);
 
 router.get("/:videoPostId", getVideoPostById);
 
