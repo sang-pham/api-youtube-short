@@ -1,5 +1,5 @@
 const { QueryTypes } = require('sequelize');
-const { Conversation, User, sequelize, Message } = require('../models');
+const { Conversation, User, sequelize, Message, Media } = require('../models');
 
 const { addUserConversation, getRecentMessage, readMessage } = require('./conversation.support')
 
@@ -67,8 +67,6 @@ const getConversationInfo = async (req, res) => {
 			message = await getRecentMessage(conversationId);
 		}
 
-
-
 		return res.status(200).json({
 			id: conversation?.id,
 			is_seen,
@@ -110,29 +108,6 @@ const setConversation = async ({ senderId, receiverId }) => {
 }
 
 
-// const getMessages = async (req, res) => {
-// 	try {
-// 		const { conversationId } = req.params;
-
-// 		const messages = await Message.findAll({
-// 			where: {
-// 				conversation_id: conversationId,
-// 			},
-// 			order: [
-// 				['createdAt', 'DESC']
-// 			]
-// 		})
-
-// 		return res.status(200).json(messages);
-
-// 	} catch (error) {
-// 		console.log(error)
-// 		return res.status(500).json({
-// 			message: "Server error!"
-// 		})
-// 	}
-// }
-
 const getMessages = async (req, res) => {
 	try {
 		const { conversationId } = req.params;
@@ -144,6 +119,13 @@ const getMessages = async (req, res) => {
 			where: {
 				conversation_id: conversationId,
 			},
+			include: [
+				{
+					model: Media,
+					as: "media",
+					attributes: ["id", "url"],
+				},
+			],
 			order: [
 				['createdAt', 'DESC']
 			],

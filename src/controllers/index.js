@@ -5,4 +5,5 @@ module.exports = {
   ...require("./conversation.support"),
   ...require("./videoPost"),
   ...require("./comment"),
+  ...require("./media"),
 };

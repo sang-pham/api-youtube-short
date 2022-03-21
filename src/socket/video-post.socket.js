@@ -1,6 +1,6 @@
 const { socketCreateComment } = require("../controllers");
 const { Reaction, User } = require("../models");
-const { emitToMany } = require("./shared");
+const { emitToMany } = require("../lib");
 
 const videoPostSockets = {};
 

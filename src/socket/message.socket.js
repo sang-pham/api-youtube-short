@@ -1,18 +1,20 @@
-const { setConversation, setMessage, getPerson } = require("../controllers");
-const { emitToMany } = require("./shared");
+const { setConversation, saveMessage, getPerson } = require("../controllers");
+const { emitToMany } = require("../lib");
 
 const messageSocket = (io, socket, userSockets) => {
-  socket.on("send-message", async ({ text, senderId, receiverId, v4Id }) => {
+
+  socket.on("send-message", async ({ text, image, senderId, receiverId, v4Id }) => {
     const conversation = await setConversation({
       senderId,
       receiverId,
     });
 
-    const message = await setMessage({
+    const message = await saveMessage({
       text,
       conversationId: conversation.id,
       senderId,
       receiverId,
+      image
     });
 
     let person = await getPerson(receiverId);

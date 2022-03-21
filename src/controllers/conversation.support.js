@@ -1,5 +1,6 @@
-const { Message, User } = require("../models");
-const { sequelize } = require("../models/user");
+const { v4 } = require("uuid");
+const { Message, User, sequelize } = require("../models");
+const { saveMedia } = require("./media.support");
 
 
 
@@ -49,13 +50,28 @@ const unReadMessage = async (conversationId, userId) => {
   return true;
 }
 
-const setMessage = async ({ text, conversationId, senderId, receiverId }) => {
+const saveMessage = async ({ text, conversationId, senderId, receiverId, image }) => {
   try {
+
     const message = await Message.create({
       text,
       conversation_id: conversationId,
-      user_id: senderId
+      user_id: senderId,
     });
+
+
+    if (image) {
+      const media = await saveMedia({
+        file: image,
+        foreign: { message_id: message.id },
+        storage: `message-image/${v4()}.png`,
+        type: 'image'
+      })
+      message.dataValues.media = [{
+        id: media.id,
+        url: media.url
+      }]
+    }
 
     await readMessage(conversationId, senderId);
     await unReadMessage(conversationId, receiverId);
@@ -95,5 +111,5 @@ const getPerson = async (userId) => {
 
 module.exports = {
   unReadMessage, addUserConversation, readMessage,
-  getRecentMessage, setMessage, getPerson
+  getRecentMessage, saveMessage, getPerson
 }

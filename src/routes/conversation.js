@@ -11,6 +11,6 @@ router.get("/unread", getNumberOfUnRead);
 
 router.get("/:conversationId/messages", getMessages);
 
-router.delete("/:conversationId/message/:messageId", deleteMessage);
+router.delete("/message/:messageId", deleteMessage);
 
 module.exports = router;

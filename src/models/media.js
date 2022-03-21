@@ -10,10 +10,13 @@ Media.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    file_name: {
-      type: DataTypes.STRING,
-    },
+    // file_name: {
+    //   type: DataTypes.STRING,
+    // },
     path: {
+      type: DataTypes.TEXT,
+    },
+    url: {
       type: DataTypes.TEXT,
     },
     size: {
@@ -22,12 +25,6 @@ Media.init(
     type: {
       type: DataTypes.STRING,
     },
-    model_id: {
-      type: DataTypes.INTEGER
-    },
-    model_type: {
-      type: DataTypes.STRING
-    }
   },
   {
     sequelize,

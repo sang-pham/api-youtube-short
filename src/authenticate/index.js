@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 let privateKey = process.env.JWT_SECRET_KEY || "secretKey";
-let skipList = ["^/pattern.*.png$", "/csv/.*", "/avatar", "/video$"];
+let skipList = ["/media", "/avatar", "/video$"];
 
 module.exports = function (req, res, next) {
   let token =
