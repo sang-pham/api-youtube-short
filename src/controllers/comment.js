@@ -1,4 +1,4 @@
-const { Comment, Media, User } = require("../models");
+const { Comment, Media, User, Reaction } = require("../models");
 
 const postComment = async (req, res) => {
   try {
@@ -11,6 +11,28 @@ const postComment = async (req, res) => {
       parent_id,
     });
     return res.status(200).json({ comment });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error });
+  }
+};
+
+const getCommentReactions = async (req, res) => {
+  try {
+    let { commentId } = req.params;
+    let reactions = await Reaction.findAll({
+      where: {
+        comment_id: commentId,
+      },
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "user_name"],
+        },
+      ],
+    });
+    return res.status(200).json({ reactions });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error });
@@ -57,4 +79,4 @@ const socketCreateComment = async ({
   }
 };
 
-module.exports = { postComment, socketCreateComment };
+module.exports = { postComment, socketCreateComment, getCommentReactions };

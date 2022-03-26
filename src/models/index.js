@@ -196,6 +196,11 @@ Reaction.belongsTo(Comment, {
   onDelete: "cascade",
 });
 
+Comment.hasMany(Reaction, {
+  foreignKey: "id",
+  as: "reactions",
+});
+
 //message-media
 Media.belongsTo(Message, {
   foreignKey: "message_id",

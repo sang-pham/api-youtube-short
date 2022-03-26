@@ -21,6 +21,7 @@ const getFollowingVideoPosts = async (req, res) => {
         status: "follow",
       },
       attributes: ["relate_id"],
+      order: [["relate_id", "ASC"]],
     });
     followings = followings.map((following) => following.relate_id);
     let videoPosts = await VideoPost.findAll({
@@ -38,10 +39,15 @@ const getFollowingVideoPosts = async (req, res) => {
           as: "user",
           attributes: ["id", "first_name", "last_name", "user_name", "email"],
         },
+        {
+          model: Comment,
+          as: "comments",
+          attributes: ["id", "user_id"],
+        },
       ],
       order: [
-        ["user_id", "ASC"],
         ["createdAt", "DESC"],
+        ["user_id", "ASC"],
       ],
       offset: page * perPage,
       limit: perPage,
@@ -83,10 +89,15 @@ const getSuggestVideoPosts = async (req, res) => {
           as: "user",
           attributes: ["id", "first_name", "last_name", "user_name", "email"],
         },
+        {
+          model: Comment,
+          as: "comments",
+          attributes: ["id", "user_id"],
+        },
       ],
       order: [
-        ["user_id", "ASC"],
         ["createdAt", "DESC"],
+        ["user_id", "ASC"],
       ],
       offset: page * perPage,
       limit: perPage,

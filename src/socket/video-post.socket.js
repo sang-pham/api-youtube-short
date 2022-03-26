@@ -87,6 +87,50 @@ const commentSocket = (io, socket) => {
       reaction
     );
   });
+
+  socket.on(
+    "reaction-comment",
+    async ({ comment_id, user_id, video_post_id }) => {
+      try {
+        let reaction = await Reaction.findOne({
+          where: {
+            comment_id,
+            user_id,
+          },
+        });
+        if (reaction && reaction.id) {
+          await reaction.destroy();
+        } else {
+          reaction = await Reaction.create({
+            comment_id,
+            user_id,
+            type: "like",
+          });
+        }
+        let reactions = await Reaction.findAll({
+          where: {
+            comment_id,
+          },
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: ["id", "user_name"],
+            },
+          ],
+        });
+        socket.emit("comment-reaction-change", { comment_id, reactions });
+        emitToMany(
+          socket,
+          videoPostSockets[video_post_id],
+          "comment-reaction-change",
+          reactions
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  );
 };
 
 module.exports = commentSocket;
