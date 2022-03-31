@@ -1,4 +1,6 @@
 const { Comment, Media, User, Reaction } = require("../models");
+const { saveMedia } = require("./media.support");
+const { v4 } = require("uuid");
 
 const postComment = async (req, res) => {
   try {
@@ -44,6 +46,7 @@ const socketCreateComment = async ({
   video_post_id,
   parent_id,
   user_id,
+  image,
 }) => {
   try {
     let comment = await Comment.create({
@@ -52,6 +55,16 @@ const socketCreateComment = async ({
       parent_id,
       user_id,
     });
+
+    if (image) {
+      const media = await saveMedia({
+        file: image,
+        foreign: { comment_id: comment.id },
+        storage: `comment-image/${v4()}.png`,
+        type: "image",
+      });
+    }
+
     comment = await Comment.findOne({
       where: {
         id: comment.id,

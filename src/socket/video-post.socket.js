@@ -27,12 +27,13 @@ const commentSocket = (io, socket) => {
   //comment
   socket.on(
     "post-comment",
-    async ({ text, video_post_id, parent_id, user_id }) => {
+    async ({ text, video_post_id, parent_id, user_id, image }) => {
       let comment = await socketCreateComment({
         text,
         video_post_id,
         parent_id,
         user_id,
+        image,
       });
       if (comment) {
         console.log(comment);
