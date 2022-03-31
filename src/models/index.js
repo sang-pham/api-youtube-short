@@ -197,7 +197,7 @@ Reaction.belongsTo(Comment, {
 });
 
 Comment.hasMany(Reaction, {
-  foreignKey: "id",
+  foreignKey: "comment_id",
   as: "reactions",
 });
 
