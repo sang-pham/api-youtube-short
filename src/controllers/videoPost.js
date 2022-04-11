@@ -260,6 +260,7 @@ const getVideoPostsByTag = async (req, res) => {
           model: VideoPost,
           as: "videoPosts",
           attributes: ["id", "caption", "video_path"],
+          order: [["createdAt", "DESC"]],
         },
       ],
     });
@@ -289,6 +290,7 @@ const getVideoPostByTagId = async (req, res) => {
           model: VideoPost,
           as: "videoPosts",
           attributes: ["id", "caption", "video_path"],
+          order: [["createdAt", "DESC"]],
           include: [
             {
               model: User,
