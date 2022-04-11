@@ -252,6 +252,72 @@ const getVideoPostReactions = async (req, res) => {
   }
 };
 
+const getVideoPostsByTag = async (req, res) => {
+  try {
+    let tags = await Tag.findAll({
+      include: [
+        {
+          model: VideoPost,
+          as: "videoPosts",
+          attributes: ["id", "caption", "video_path"],
+        },
+      ],
+    });
+    tags = tags.map((tag) => {
+      tag.videoPosts = tag.videoPosts.map((videoPost) => {
+        videoPost.video_tag.dataValues = undefined;
+        return videoPost;
+      });
+      return tag;
+    });
+    return res.status(200).json({ tags });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error });
+  }
+};
+
+const getVideoPostByTagId = async (req, res) => {
+  try {
+    let { tagId } = req.params;
+    let tag = await Tag.findOne({
+      where: {
+        id: tagId,
+      },
+      include: [
+        {
+          model: VideoPost,
+          as: "videoPosts",
+          attributes: ["id", "caption", "video_path"],
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: [
+                "id",
+                "first_name",
+                "last_name",
+                "user_name",
+                "email",
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    if (tag) {
+      tag.videoPosts = tag.videoPosts.map((videoPost) => {
+        videoPost.video_tag.dataValues = undefined;
+        return videoPost;
+      });
+    }
+    return res.status(200).json({ tag });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error });
+  }
+};
+
 module.exports = {
   getFollowingVideoPosts,
   getVideoPostById,
@@ -259,4 +325,6 @@ module.exports = {
   getVideoPostComments,
   getVideoPostReactions,
   getSuggestVideoPosts,
+  getVideoPostsByTag,
+  getVideoPostByTagId,
 };
