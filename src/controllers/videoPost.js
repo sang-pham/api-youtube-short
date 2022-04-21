@@ -9,6 +9,7 @@ const {
 } = require("../models");
 const axios = require("axios");
 const { Op } = require("sequelize");
+const fs = require("fs");
 
 const getFollowingVideoPosts = async (req, res) => {
   try {
@@ -135,28 +136,33 @@ const getVideoPostById = async (req, res) => {
 
 const getVideoById = async (req, res) => {
   try {
-    let videoPostId = req.params.videoPostId;
-    let videoPost = await VideoPost.findOne({
-      where: {
-        id: videoPostId,
-      },
-      attributes: ["video_path"],
-    });
-    if (!videoPost) {
-      return res.status(500).json({
-        message: "Something wrong",
-      });
-    }
-    let videoPath =
-      videoPost.video_path ||
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4";
-    axios({
-      method: "get",
-      url: videoPath,
-      responseType: "stream",
-    })
-      .then((response) => response.data.pipe(res))
-      .catch((error) => console.log(error));
+    // let videoPostId = req.params.videoPostId;
+    // let videoPost = await VideoPost.findOne({
+    //   where: {
+    //     id: videoPostId,
+    //   },
+    //   attributes: ["video_path"],
+    // });
+    // if (!videoPost) {
+    //   return res.status(500).json({
+    //     message: "Something wrong",
+    //   });
+    // }
+    // let videoPath =
+    //   videoPost.video_path ||
+    //   "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4";
+    // axios({
+    //   method: "get",
+    //   url: videoPath,
+    //   responseType: "stream",
+    // })
+    //   .then((response) => response.data.pipe(res))
+    //   .catch((error) => console.log(error));
+    const path =
+      Math.random() > 0.5
+        ? "./src/public/ForBiggerBlazes.mp4"
+        : "./src/public/ForBiggerFun.mp4";
+    return fs.createReadStream(path).pipe(res);
     // return res.status(200).json({ videoPath });
   } catch (error) {
     console.log(error);
