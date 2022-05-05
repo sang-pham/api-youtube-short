@@ -6,4 +6,5 @@ module.exports = {
   ...require("./videoPost"),
   ...require("./comment"),
   ...require("./media"),
+  ...require("./mediaUpload"),
 };

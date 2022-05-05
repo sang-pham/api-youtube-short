@@ -4,5 +4,6 @@ module.exports = {
   "/api/relationship": require("./relationship"),
   "/api/video-post": require("./videoPost"),
   "/api/comment": require("./comment"),
-  "/api/media": require('./media')
+  "/api/media": require('./media'),
+  "/api/": require('./mediaUpload')
 };
