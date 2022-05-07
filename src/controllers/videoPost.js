@@ -360,6 +360,41 @@ const getVideoPostByTagId = async (req, res) => {
   }
 };
 
+const getUserVideos = async (req, res) => {
+  try {
+    let { userId } = req.params;
+    userId = Number(userId);
+    let page = (Number(req.query.page) || 1) - 1;
+    let per_page = Number(req.query.per_page) || 10;
+    let videoPosts = await VideoPost.findAll({
+      where: {
+        user_id: userId,
+      },
+      include: [
+        {
+          model: Tag,
+          as: "tags",
+          attributes: ["id", "name"],
+        },
+        {
+          model: Comment,
+          as: "comments",
+          attributes: ["id", "user_id"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+      offset: page * per_page,
+      limit: per_page,
+    });
+    return res.status(200).json({
+      videoPosts,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error });
+  }
+};
+
 module.exports = {
   getFollowingVideoPosts,
   getVideoPostById,
@@ -369,4 +404,5 @@ module.exports = {
   getSuggestVideoPosts,
   getVideoPostsByTag,
   getVideoPostByTagId,
+  getUserVideos,
 };
