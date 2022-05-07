@@ -2,6 +2,7 @@ const appConst = require("../constants");
 const AWS = require("aws-sdk");
 const fs = require("fs");
 const { path } = require("express/lib/application");
+const { VideoPost, Tag } = require("../models");
 // import {Readable, ReadableOptions} from "stream";
 
 const ID = appConst.s3Key.keyID;
@@ -14,7 +15,7 @@ const s3 = new AWS.S3({
 
 const mediaUpload = async (req, res) => {
   // Read content from the x1
-//   let { description } = req.body;
+  //   let { description } = req.body;
   try {
     // let userId = Number(req.auth.id);
     // let user = await User.findOne({
@@ -23,27 +24,58 @@ const mediaUpload = async (req, res) => {
     //   },
     // });
     const file = req.file;
-    const fileContent = fs.createReadStream(file.path);
+    // const fileContent = fs.createReadStream(file.path);
     // Setting up S3 upload parameters
-    const params = {
-      Bucket: BUCKET_NAME,
-      Key: file.filename, // File name you want to save as in S3
-      Body: fileContent,
-      ACL: 'public-read',
-    };
+    // const params = {
+    //   Bucket: BUCKET_NAME,
+    //   Key: file.filename, // File name you want to save as in S3
+    //   Body: fileContent,
+    //   ACL: 'public-read',
+    // };
 
     // Uploading files to the bucket
-    await s3.upload(params, function (err, data) {
-      if (err) {
-        throw err;
+    // await s3.upload(params, function (err, data) {
+    //   if (err) {
+    //     throw err;
+    //   }
+    //   console.log(`File uploaded successfully. ${data.Location}`);
+    //   return res.status(200).json({
+    //     url: data.Location,
+    //   });
+    // });
+    let userId = Number(req.auth.id);
+    let { caption, tags } = req.body;
+    let videoPost = await VideoPost.create({
+      user_id: userId,
+      caption,
+      video_path: file.path,
+    });
+
+    let myTag;
+    tags = tags.split(",").map((tag) => tag.trim());
+    if (tags && tags.length) {
+      for (const tag of tags) {
+        if (tag) {
+          myTag = await Tag.findOne({
+            where: {
+              name: tag,
+            },
+          });
+          if (!myTag) {
+            myTag = await Tag.create({
+              name: myTag,
+            });
+          }
+          await videoPost.addTag(myTag);
+        }
       }
-      console.log(`File uploaded successfully. ${data.Location}`);
-      return res.status(200).json({
-        url: data.Location,
-      });
+    }
+
+    return res.status(200).json({
+      videoPost,
     });
   } catch (error) {
-      throw error;
+    throw error;
   }
 };
 

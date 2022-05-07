@@ -9,9 +9,6 @@ module.exports = function (req, res, next) {
     req.header["x-access-token"] ||
     req.get("Authorization") ||
     req.query.token;
-    if(req.get("Authorization")) {
-      token = token.substring(7)
-    }
   if (new RegExp(skipList.join("|")).test(req.originalUrl)) {
     req.decoded = {
       user_name: "unauthorized_user",

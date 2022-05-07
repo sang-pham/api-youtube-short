@@ -158,12 +158,46 @@ const getVideoById = async (req, res) => {
     // })
     //   .then((response) => response.data.pipe(res))
     //   .catch((error) => console.log(error));
-    const path =
-      Math.random() > 0.5
-        ? "./src/public/ForBiggerBlazes.mp4"
-        : "./src/public/ForBiggerFun.mp4";
-    return fs.createReadStream(path).pipe(res);
+
+    // const path =
+    //   Math.random() > 0.5
+    //     ? "./src/public/ForBiggerBlazes.mp4"
+    //     : "./src/public/ForBiggerFun.mp4";
+    // return fs.createReadStream(path).pipe(res);
+
     // return res.status(200).json({ videoPath });
+
+    let videoPostId = req.params.videoPostId;
+    let videoPost = await VideoPost.findOne({
+      where: {
+        id: videoPostId,
+      },
+      attributes: ["video_path"],
+    });
+    if (!videoPost) {
+      return res.status(500).json({
+        message: "Something wrong",
+      });
+    }
+    return fs.createReadStream(videoPost.video_path).pipe(res);
+    // s3.getObject({
+    //   Bucket: BUCKET_NAME,
+    //   Key: videoPost.video_path,
+    // })
+    //   .on("httpHeaders", function (statusCode, headers) {
+    //     if (statusCode == 200) {
+    //       res.set("Content-Length", headers["content-length"]);
+    //       res.set("Content-Type", headers["content-type"]);
+    //       this.response.httpResponse.createUnbufferedStream().pipe(res);
+    //     }
+    //   })
+    //   .send();
+
+    // createAWSStream(videoPost.video_path).then((stream) =>
+    //   stream.pipe(res).on("error", (error) => {
+    //     console.log(error);
+    //   })
+    // );
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error });
