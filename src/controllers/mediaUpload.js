@@ -42,6 +42,7 @@ const mediaUpload = async (req, res) => {
     //     url: data.Location,
     //   });
     // });
+
     const file = req.file;
     let userId = Number(req.auth.id);
     let { caption, tags } = req.body;
@@ -72,12 +73,13 @@ const mediaUpload = async (req, res) => {
         }
       }
     }
-
+    console.log('thanh cong');
     return res.status(200).json({
       videoPost,
     });
   } catch (error) {
-    throw error;
+    console.log(error);
+    return res.status(400).json({error});
   }
 };
 
