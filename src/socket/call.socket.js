@@ -3,12 +3,13 @@ const { emitToMany } = require("../lib");
 const callSocket = (io, socket, userSockets) => {
   socket.on(
     "video-call-start",
-    ({ senderId, receiverId, chatBoxId, offer }) => {
+    ({ senderId, receiverId, chatBoxId, offer, isVideoCall }) => {
       emitToMany(socket, userSockets[receiverId], "video-call-start", {
         senderId,
         receiverId,
         chatBoxId,
         offer,
+        isVideoCall,
       });
       console.log("call start");
     }
@@ -36,6 +37,13 @@ const callSocket = (io, socket, userSockets) => {
       senderId,
       receiverId,
       candidate: payload,
+    });
+  });
+
+  socket.on("video-call-media-active", ({ receiverId, mic, camera }) => {
+    emitToMany(socket, userSockets[receiverId], "video-call-media-active", {
+      mic,
+      camera,
     });
   });
 };
