@@ -8,11 +8,14 @@ const {
   getSuggestVideoPosts,
   getVideoPostsByTag,
   getVideoPostByTagId,
+  getUserVideoPosts
 } = require("../controllers");
 
 router.route("/following").get(getFollowingVideoPosts);
 
 router.get("/suggest", getSuggestVideoPosts);
+
+router.get('/user/:userId', getUserVideoPosts);
 
 router.get("/get-by-tag", getVideoPostsByTag);
 
