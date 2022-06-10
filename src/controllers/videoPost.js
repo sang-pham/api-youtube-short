@@ -432,6 +432,35 @@ const getUserVideoPosts = async (req, res) => {
   }
 }
 
+const deleteVideoPost = async (req, res) => {
+  const { id } = req.params
+  const videoPost = await VideoPost.findOne({
+    where: {
+      id
+    }
+  })
+  if (!videoPost) {
+    return res.status(400).json({
+      messsage: `Cann't find post with id ${id}`
+    })
+  }
+  let videoPath = videoPost.video_path
+  await videoPost.destroy()
+  fs.unlink(videoPath, (error) => {
+    if (error) {
+      return res.status(400).json({
+        error
+      })
+    }
+    return res.status(200).json({
+      message: "Delete succesfully"
+    })
+  })
+  return res.status(200).json({
+    message: "Delete succesfully"
+  })
+}
+
 module.exports = {
   getFollowingVideoPosts,
   getVideoPostById,
@@ -441,5 +470,6 @@ module.exports = {
   getSuggestVideoPosts,
   getVideoPostsByTag,
   getVideoPostByTagId,
-  getUserVideoPosts
+  getUserVideoPosts,
+  deleteVideoPost
 };

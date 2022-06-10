@@ -8,7 +8,8 @@ const {
   getSuggestVideoPosts,
   getVideoPostsByTag,
   getVideoPostByTagId,
-  getUserVideoPosts
+  getUserVideoPosts,
+  deleteVideoPost
 } = require("../controllers");
 
 router.route("/following").get(getFollowingVideoPosts);
@@ -28,5 +29,7 @@ router.get("/:videoPostId/video", getVideoById);
 router.get("/:videoPostId/comments", getVideoPostComments);
 
 router.get("/:videoPostId/reactions", getVideoPostReactions);
+
+router.delete('/:id', deleteVideoPost);
 
 module.exports = router;
