@@ -432,33 +432,78 @@ const getUserVideoPosts = async (req, res) => {
   }
 }
 
-const deleteVideoPost = async (req, res) => {
-  const { id } = req.params
-  const videoPost = await VideoPost.findOne({
-    where: {
-      id
-    }
-  })
-  if (!videoPost) {
-    return res.status(400).json({
-      messsage: `Cann't find post with id ${id}`
+const updateVideoPost = async (req, res) => {
+  try {
+    const { id } = req.params
+    const videoPost = await VideoPost.findOne({
+      where: {
+        id
+      }
     })
-  }
-  let videoPath = videoPost.video_path
-  await videoPost.destroy()
-  fs.unlink(videoPath, (error) => {
-    if (error) {
+    if (!videoPost) {
       return res.status(400).json({
-        error
+        messsage: `Cann't find post with id ${id}`
       })
     }
+    let { tags, caption } = req.body
+    if (caption) {
+      await videoPost.update({
+        caption
+      })
+    }
+    if (tags && typeof tags == 'string') {
+      let currentTags = await videoPost.getTags()
+      await videoPost.removeTags(currentTags)
+      tags = tags.split(",")
+      const _tags = await Tag.findAll({
+        where: {
+          name: tags
+        }
+      })
+      if (_tags && _tags.length) {
+        await videoPost.addTags(_tags)
+      }
+    } 
+    return res.status(200).json({
+      message: 'Update succesfully'
+    })
+  } catch (error) {
+    return res.status(500).json({error})
+  }
+}
+
+const deleteVideoPost = async (req, res) => {
+  try {
+    const { id } = req.params
+    const videoPost = await VideoPost.findOne({
+      where: {
+        id
+      }
+    })
+    if (!videoPost) {
+      return res.status(404).json({
+        messsage: `Cann't find post with id ${id}`
+      })
+    }
+    let videoPath = videoPost.video_path
+    await videoPost.destroy()
+    fs.unlink(videoPath, (error) => {
+      if (error) {
+        return res.status(404).json({
+          message: 'Something wrong'
+        })
+      }
+      return res.status(200).json({
+        message: "Delete succesfully"
+      })
+    })
     return res.status(200).json({
       message: "Delete succesfully"
     })
-  })
-  return res.status(200).json({
-    message: "Delete succesfully"
-  })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({error})
+  }
 }
 
 module.exports = {
@@ -471,5 +516,6 @@ module.exports = {
   getVideoPostsByTag,
   getVideoPostByTagId,
   getUserVideoPosts,
-  deleteVideoPost
+  deleteVideoPost,
+  updateVideoPost
 };
