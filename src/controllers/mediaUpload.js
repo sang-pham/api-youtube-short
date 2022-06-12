@@ -23,7 +23,6 @@ const mediaUpload = async (req, res) => {
     //     id: userId,
     //   },
     // });
-    const file = req.file;
     // const fileContent = fs.createReadStream(file.path);
     // Setting up S3 upload parameters
     // const params = {
@@ -43,6 +42,8 @@ const mediaUpload = async (req, res) => {
     //     url: data.Location,
     //   });
     // });
+
+    const file = req.file;
     let userId = Number(req.auth.id);
     let { caption, tags } = req.body;
     let videoPost = await VideoPost.create({
@@ -52,7 +53,9 @@ const mediaUpload = async (req, res) => {
     });
 
     let myTag;
-    tags = tags.split(",").map((tag) => tag.trim());
+    if(tags) {
+      tags = tags.split(",").map((tag) => tag.trim());
+    }
     if (tags && tags.length) {
       for (const tag of tags) {
         if (tag) {
@@ -63,19 +66,20 @@ const mediaUpload = async (req, res) => {
           });
           if (!myTag) {
             myTag = await Tag.create({
-              name: myTag,
+              name: tag,
             });
           }
           await videoPost.addTag(myTag);
         }
       }
     }
-
+    console.log('thanh cong');
     return res.status(200).json({
       videoPost,
     });
   } catch (error) {
-    throw error;
+    console.log(error);
+    return res.status(400).json({error});
   }
 };
 
