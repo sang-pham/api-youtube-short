@@ -77,7 +77,7 @@ const getSuggestVideoPosts = async (req, res) => {
     followings = followings.map((following) => following.relate_id);
     let videoPosts = await VideoPost.findAll({
       where: {
-        user_id: { [Op.notIn]: [followings] },
+        user_id: { [Op.notIn]: [...followings, userId] },
       },
       include: [
         {
