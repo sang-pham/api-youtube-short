@@ -73,10 +73,7 @@ const mediaUpload = async (req, res) => {
         }
       }
     }
-    console.log('thanh cong');
-    return res.status(200).json({
-      videoPost,
-    });
+    return res.status(200).json(videoPost);
   } catch (error) {
     console.log(error);
     return res.status(400).json({error});
